@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 # =============== YOUR TOKEN ===================
-BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+BOT_TOKEN = "8273797655:AAGFjB7px-1XprLNR_6QNUWuqIFW_qm2owM"
 # ==============================================
 
 logging.basicConfig(
@@ -19,8 +19,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.effective_user.first_name
 
     msg = (
-        f"👋 Halo *{username}*!\n\n"
-        "Selamat datang di *Axis Info Checker Bot*.\n"
+        f"👋 Hai bre*{username}*!\n\n"
+        "Selamat datang di *Axis Info Checker Rev*.\n"
         "Saya dapat membantu mengecek info kartu Axis secara lengkap.\n\n"
         "*Perintah yang tersedia:*\n"
         "• `/infoaxis 628xxxx` — cek detail kartu Axis\n"
