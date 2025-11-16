@@ -81,22 +81,69 @@ async def infoaxis(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         d = data["data"]
 
+        # ============================================
+        # RAPIKAN FORMAT QUOTA + TERJEMAHAN
+        # ============================================
+        quota_msg = "📦 *Kuota Aktif*\n"
+
+        if d["quotas"]["success"]:
+            for paket in d["quotas"]["value"]:
+                quota_msg += f"\n• *Nama Paket:* `{paket.get('name','N/A')}`\n"
+                quota_msg += "  _(Nama paket internet yang sedang aktif)_\n"
+
+                quota_msg += f"  • *Tanggal Berakhir:* `{paket.get('date_end','N/A')}`\n"
+                quota_msg += "    _(Tanggal ketika paket ini habis)_\n"
+
+                quota_msg += f"  • *UNIX End:* `{paket.get('date_end_unix','N/A')}`\n"
+                quota_msg += "    _(Versi waktu dalam UNIX timestamp)_\n"
+
+                quota_msg += f"  • *Persentase Terpakai:* `{paket.get('percent','N/A')}%`\n"
+                quota_msg += "    _(Seberapa banyak kuota sudah digunakan)_\n"
+
+                # Detail kuota
+                if "detail_quota" in paket:
+                    quota_msg += "  • *Rincian Kuota:*\n"
+                    for detail in paket["detail_quota"]:
+                        nama = detail.get("name", "N/A")
+                        total = detail.get("total_text", "N/A")
+                        sisa = detail.get("remaining_text", "N/A")
+                        tipe = detail.get("data_type", "DATA")
+
+                        quota_msg += (
+                            f"    - *{nama}*\n"
+                            f"      Total: `{total}` → Sisa: `{sisa}`\n"
+                            f"      _(Jenis: {tipe}; {nama} = kategori kuota ini)_\n"
+                        )
+        else:
+            quota_msg += "• Tidak ada paket aktif\n"
+
+
+        # ============================================
+        # FINAL MESSAGE
+        # ============================================
         msg = (
             "📱 *AXIS CARD INFORMATION*\n"
             "--------------------------------\n"
             f"• *Nomor:* `{d.get('msisdn', 'N/A')}`\n"
+            "   _(Nomor kartu Axis)_\n"
             f"• *Provider:* `{d['prefix'].get('value','N/A')}`\n"
+            "   _(Jenis provider berdasarkan prefix)_\n"
             f"• *Dukcapil:* `{d['dukcapil'].get('value','N/A')}`\n"
+            "   _(Status registrasi NIK)_\n"
             f"• *4G:* `{d['status_4g'].get('value','N/A')}`\n"
+            "   _(Apakah nomor sudah 4G)_\n"
             f"• *Masa Aktif:* `{d['active_card'].get('value','N/A')}`\n"
             f"• *Aktif Sampai:* `{d['active_period'].get('value','N/A')}`\n"
             f"• *Masa Tenggang:* `{d['grace_period'].get('value','N/A')}`\n\n"
+
             "📶 *VoLTE*\n"
             f"   • Device : `{ 'Yes' if d['volte']['value'].get('device') else 'No' }`\n"
+            "     _(Apakah HP mendukung VoLTE)_\n"
             f"   • Area   : `{ 'Yes' if d['volte']['value'].get('area') else 'No' }`\n"
-            f"   • SIM    : `{ 'Yes' if d['volte']['value'].get('simcard') else 'No' }`\n\n"
-            "📦 *Kuota Aktif*\n"
-            f"• `{ d['quotas']['value'] if d['quotas']['success'] else 'Tidak ada paket aktif' }`\n\n"
+            "     _(Apakah wilayah mendukung VoLTE)_\n"
+            f"   • SIM    : `{ 'Yes' if d['volte']['value'].get('simcard') else 'No' }`\n"
+            "     _(Apakah kartu mendukung VoLTE)_\n\n"
+            f"{quota_msg}\n"
             "🛠 Developer: Purple | Iris"
         )
 
